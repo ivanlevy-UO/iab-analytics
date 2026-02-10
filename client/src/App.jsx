@@ -115,7 +115,7 @@ function App() {
         <div className="dashboard">
             <header>
                 <div>
-                    <h1>Métricas - Noticias IAB (arg)</h1>
+                    <h1>IAB - ANALYTICS</h1>
                     <div className="status-indicator">
                         <div className="dot" style={{ backgroundColor: '#22c55e' }}></div>
                         Panel Histórico (30 días) {lastUpdated && <span style={{ marginLeft: '10px', opacity: 0.6 }}>— Actualizado: {lastUpdated}</span>}
