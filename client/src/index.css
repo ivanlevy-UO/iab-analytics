@@ -201,3 +201,163 @@ tr:last-child td {
 .spin {
   animation: spin 1s linear infinite;
 }
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .dashboard {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  header h1 {
+    font-size: 1.75rem;
+  }
+
+  header>div:last-child {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  header button {
+    flex: 1;
+    justify-content: center;
+    min-width: 160px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .card-value {
+    font-size: 2rem;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    gap: 1rem !important;
+  }
+
+  .filters-row .card {
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    padding: 1rem;
+  }
+
+  .table-container {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    background: var(--card-bg);
+    border: 1px solid #e5e5e5;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  td {
+    padding: 0.75rem 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f8f8f8;
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+
+  /* Specific News Cell */
+  td:first-child {
+    display: block;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Target the div inside first td in App.jsx */
+  td:first-child>div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+
+  td:first-child span {
+    word-break: break-all;
+    line-height: 1.4;
+    font-size: 1.1rem;
+    color: var(--text-main);
+  }
+
+  .badge {
+    margin: 0 !important;
+    font-size: 0.7rem;
+  }
+
+  /* Labels for other cells on mobile */
+  td:nth-child(2)::before {
+    content: "Vistas (30D):";
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  td:nth-child(3)::before {
+    content: "Usuarios (30D):";
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  td:nth-child(4)::before {
+    content: "Lectura Prom.:";
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+}

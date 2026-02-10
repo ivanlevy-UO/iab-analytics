@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, Eye, FileText, RefreshCw, AlertCircle, Clock, PieChart, Download } from 'lucide-react';
+import { Users, Eye, FileText, RefreshCw, AlertCircle, Clock, PieChart, Download, Search } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -7,6 +7,8 @@ const API_URL = '/api/analytics';
 
 function App() {
     const [pages, setPages] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('views-desc');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
@@ -172,8 +174,49 @@ function App() {
                     </div>
                 </div>
 
+                <div className="filters-row" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div className="card" style={{ flex: 1, minWidth: '280px', padding: '0.875rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <Search size={20} style={{ opacity: 0.4 }} />
+                        <input
+                            type="text"
+                            placeholder="Buscar noticia..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                border: 'none',
+                                outline: 'none',
+                                width: '100%',
+                                fontSize: '0.95rem',
+                                background: 'transparent',
+                                fontFamily: 'inherit'
+                            }}
+                        />
+                    </div>
+                    <div className="card" style={{ padding: '0.5rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: '200px' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Ordenar:</span>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            style={{
+                                border: 'none',
+                                outline: 'none',
+                                background: 'transparent',
+                                fontSize: '0.95rem',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                color: 'var(--text-main)',
+                                width: '100%'
+                            }}
+                        >
+                            <option value="views-desc">Más Vistas</option>
+                            <option value="views-asc">Menos Vistas</option>
+                            <option value="latest">Últimas Publicadas</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div className="table-container">
-                    <table>
+                    <table className="news-table">
                         <thead>
                             <tr>
                                 <th>NOTICIA</th>
@@ -183,25 +226,37 @@ function App() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pages.map((p, index) => (
-                                <tr key={p.pagePath}>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <FileText size={14} style={{ opacity: 0.5 }} />
-                                            <span style={{ fontWeight: index === 0 ? '700' : '400' }}>{p.pagePath}</span>
-                                            {index === 0 && <span className="badge">Noticia Top</span>}
-                                        </div>
-                                    </td>
-                                    <td style={{ fontWeight: '600' }}>{p.screenPageViews.toLocaleString()}</td>
-                                    <td>{p.activeUsers.toLocaleString()}</td>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <Clock size={14} style={{ opacity: 0.5 }} />
-                                            {p.avgDuration} seg
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            {pages
+                                .filter(p => p.pagePath.toLowerCase().includes(searchTerm.toLowerCase()))
+                                .sort((a, b) => {
+                                    if (sortBy === 'views-desc') return b.screenPageViews - a.screenPageViews;
+                                    if (sortBy === 'views-asc') return a.screenPageViews - b.screenPageViews;
+                                    if (sortBy === 'latest') {
+                                        const idA = parseInt(a.pagePath.match(/\d+/)?.[0] || 0);
+                                        const idB = parseInt(b.pagePath.match(/\d+/)?.[0] || 0);
+                                        return idB - idA;
+                                    }
+                                    return 0;
+                                })
+                                .map((p, index) => (
+                                    <tr key={p.pagePath}>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <FileText size={14} style={{ opacity: 0.5 }} />
+                                                <span style={{ fontWeight: index === 0 ? '700' : '400' }}>{p.pagePath}</span>
+                                                {index === 0 && <span className="badge">Noticia Top</span>}
+                                            </div>
+                                        </td>
+                                        <td style={{ fontWeight: '600' }}>{p.screenPageViews.toLocaleString()}</td>
+                                        <td>{p.activeUsers.toLocaleString()}</td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <Clock size={14} style={{ opacity: 0.5 }} />
+                                                {p.avgDuration} seg
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
