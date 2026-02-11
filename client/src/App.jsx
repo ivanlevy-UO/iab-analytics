@@ -44,6 +44,7 @@ function App() {
 
     const downloadPDF = () => {
         try {
+            const doc = new jsPDF();
             const now = new Date();
             const date = now.toLocaleDateString('es-ES');
             const time = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -89,7 +90,7 @@ function App() {
 
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 20,
-                head: [['Noticia', 'Lecturas', 'Lectores', 'Dureción Prom.']],
+                head: [['Noticia', 'Lecturas', 'Lectores', 'Duración Prom.']],
                 body: tableData,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 30, 30] }
