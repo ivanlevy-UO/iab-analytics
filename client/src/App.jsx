@@ -81,30 +81,30 @@ function App() {
             // Tabla de Detalle
             doc.text('Detalle por Noticia', 14, doc.lastAutoTable.finalY + 15);
 
-            const tableData = pages.map(p => {
-                const title = p.pageTitle
-                    ? (p.pageTitle.split('|')[0].trim().length > 60
-                        ? p.pageTitle.split('|')[0].trim().substring(0, 60) + '...'
-                        : p.pageTitle.split('|')[0].trim())
-                    : 'Sin título';
-
-                // Combine title and secondary path with a newline character
-                const displayValue = `${title}\n${p.pagePath}`;
-
-                return [
-                    displayValue,
-                    p.screenPageViews.toLocaleString(),
-                    p.activeUsers.toLocaleString(),
-                    `${p.avgDuration} seg`
-                ];
-            });
-
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 20,
                 head: [['Noticia', 'Lecturas', 'Lectores', 'Duración Prom.']],
-                body: tableData,
+                body: pages.map(p => {
+                    const title = p.pageTitle
+                        ? (p.pageTitle.split('|')[0].trim().length > 50
+                            ? p.pageTitle.split('|')[0].trim().substring(0, 50) + '...'
+                            : p.pageTitle.split('|')[0].trim())
+                        : 'Sin título';
+
+                    const fullUrl = `https://www.iabargentina.com.ar${p.pagePath}`;
+
+                    return [
+                        { content: `${title}\n${fullUrl}`, link: { url: fullUrl } },
+                        p.screenPageViews.toLocaleString(),
+                        p.activeUsers.toLocaleString(),
+                        `${p.avgDuration} seg`
+                    ];
+                }),
                 theme: 'grid',
-                headStyles: { fillColor: [30, 30, 30] }
+                headStyles: { fillColor: [30, 30, 30] },
+                columnStyles: {
+                    0: { cellWidth: 100 } // Give more space to the news column
+                }
             });
 
             doc.save(`reporte-iab-${date.replace(/\//g, '-')}.pdf`);
@@ -274,7 +274,7 @@ function App() {
                                                             : p.pagePath}
                                                     </a>
                                                     <span style={{ fontSize: '0.75rem', opacity: 0.5, fontFamily: 'monospace' }}>
-                                                        {p.pagePath}
+                                                        {`https://www.iabargentina.com.ar${p.pagePath}`}
                                                     </span>
                                                 </div>
                                                 {index === 0 && <span className="badge">Noticia Top</span>}
