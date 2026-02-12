@@ -81,12 +81,19 @@ function App() {
             // Tabla de Detalle
             doc.text('Detalle por Noticia', 14, doc.lastAutoTable.finalY + 15);
 
-            const tableData = pages.map(p => [
-                p.pagePath,
-                p.screenPageViews.toLocaleString(),
-                p.activeUsers.toLocaleString(),
-                `${p.avgDuration}s`
-            ]);
+            const tableData = pages.map(p => {
+                const displayTitle = p.pageTitle
+                    ? (p.pageTitle.split('|')[0].trim().length > 60
+                        ? p.pageTitle.split('|')[0].trim().substring(0, 60) + '...'
+                        : p.pageTitle.split('|')[0].trim())
+                    : p.pagePath;
+                return [
+                    displayTitle,
+                    p.screenPageViews.toLocaleString(),
+                    p.activeUsers.toLocaleString(),
+                    `${p.avgDuration} seg`
+                ];
+            });
 
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 20,
