@@ -32,7 +32,10 @@ class GA4Service {
         const request = {
             property: `properties/${this.propertyId}`,
             dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
-            dimensions: [{ name: 'pagePath' }],
+            dimensions: [
+                { name: 'pagePath' },
+                { name: 'pageTitle' }
+            ],
             metrics: [
                 { name: 'screenPageViews' },
                 { name: 'activeUsers' },
@@ -80,6 +83,7 @@ class GA4Service {
 
             return {
                 pagePath: row.dimensionValues[0].value,
+                pageTitle: row.dimensionValues[1].value,
                 screenPageViews: views,
                 activeUsers: users,
                 avgDuration: users > 0 ? (totalDuration / users).toFixed(1) : 0,

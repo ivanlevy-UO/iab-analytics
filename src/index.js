@@ -39,5 +39,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
     console.log(`GA4 Analytics Backend running on http://localhost:${PORT}`);
-    console.log(`Property ID: ${process.env.GA_PROPERTY_ID}`);
 });

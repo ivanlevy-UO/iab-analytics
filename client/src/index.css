@@ -145,6 +145,17 @@ tr:last-child td {
   border-bottom: none;
 }
 
+.note-link {
+  color: var(--text-main);
+  text-decoration: none;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+.note-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 .badge {
   padding: 0.25rem 0.75rem;
   border-radius: 0;

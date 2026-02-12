@@ -1,4 +1,5 @@
 const ga4Service = require('../services/ga4Service');
+const titleService = require('../services/titleService');
 
 /**
  * GET /api/analytics/pages
@@ -6,7 +7,17 @@ const ga4Service = require('../services/ga4Service');
  */
 exports.getAllPages = async (req, res, next) => {
     try {
-        const data = await ga4Service.fetchPageMetrics();
+        const rawData = await ga4Service.fetchPageMetrics();
+
+        // Enrich data with actual headlines
+        const data = await Promise.all(rawData.map(async (item) => {
+            const realTitle = await titleService.getTitle(item.pagePath);
+            return {
+                ...item,
+                pageTitle: realTitle || item.pageTitle // Fallback to GA4 title if scraper fails
+            };
+        }));
+
         res.json({
             success: true,
             count: data.length,

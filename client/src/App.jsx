@@ -228,7 +228,10 @@ function App() {
                         </thead>
                         <tbody>
                             {pages
-                                .filter(p => p.pagePath.toLowerCase().includes(searchTerm.toLowerCase()))
+                                .filter(p =>
+                                    p.pagePath.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    (p.pageTitle && p.pageTitle.toLowerCase().includes(searchTerm.toLowerCase()))
+                                )
                                 .sort((a, b) => {
                                     if (sortBy === 'views-desc') return b.screenPageViews - a.screenPageViews;
                                     if (sortBy === 'views-asc') return a.screenPageViews - b.screenPageViews;
@@ -243,8 +246,26 @@ function App() {
                                     <tr key={p.pagePath}>
                                         <td>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <FileText size={14} style={{ opacity: 0.5 }} />
-                                                <span style={{ fontWeight: index === 0 ? '700' : '400' }}>{p.pagePath}</span>
+                                                <FileText size={14} style={{ opacity: 0.5, flexShrink: 0 }} />
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <a
+                                                        href={`https://www.iabargentina.com.ar${p.pagePath}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="note-link"
+                                                        style={{ fontWeight: index === 0 ? '700' : '500', fontSize: '1rem' }}
+                                                        title={p.pageTitle}
+                                                    >
+                                                        {p.pageTitle
+                                                            ? (p.pageTitle.split('|')[0].trim().length > 35
+                                                                ? p.pageTitle.split('|')[0].trim().substring(0, 35) + '...'
+                                                                : p.pageTitle.split('|')[0].trim())
+                                                            : p.pagePath}
+                                                    </a>
+                                                    <span style={{ fontSize: '0.75rem', opacity: 0.5, fontFamily: 'monospace' }}>
+                                                        {p.pagePath}
+                                                    </span>
+                                                </div>
                                                 {index === 0 && <span className="badge">Noticia Top</span>}
                                             </div>
                                         </td>
