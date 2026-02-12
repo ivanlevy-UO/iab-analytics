@@ -81,29 +81,38 @@ function App() {
             // Tabla de Detalle
             doc.text('Detalle por Noticia', 14, doc.lastAutoTable.finalY + 15);
 
+            const tableData = pages.map(p => {
+                const title = p.pageTitle
+                    ? (p.pageTitle.split('|')[0].trim().length > 55
+                        ? p.pageTitle.split('|')[0].trim().substring(0, 55) + '...'
+                        : p.pageTitle.split('|')[0].trim())
+                    : 'Sin título';
+
+                const fullUrl = `https://www.iabargentina.com.ar${p.pagePath}`;
+                return [
+                    { content: `${title}\n${fullUrl}`, url: fullUrl },
+                    p.screenPageViews.toLocaleString(),
+                    p.activeUsers.toLocaleString(),
+                    `${p.avgDuration} seg`
+                ];
+            });
+
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 20,
                 head: [['Noticia', 'Lecturas', 'Lectores', 'Duración Prom.']],
-                body: pages.map(p => {
-                    const title = p.pageTitle
-                        ? (p.pageTitle.split('|')[0].trim().length > 50
-                            ? p.pageTitle.split('|')[0].trim().substring(0, 50) + '...'
-                            : p.pageTitle.split('|')[0].trim())
-                        : 'Sin título';
-
-                    const fullUrl = `https://www.iabargentina.com.ar${p.pagePath}`;
-
-                    return [
-                        { content: `${title}\n${fullUrl}`, link: { url: fullUrl } },
-                        p.screenPageViews.toLocaleString(),
-                        p.activeUsers.toLocaleString(),
-                        `${p.avgDuration} seg`
-                    ];
-                }),
+                body: tableData,
                 theme: 'grid',
                 headStyles: { fillColor: [30, 30, 30] },
                 columnStyles: {
-                    0: { cellWidth: 100 } // Give more space to the news column
+                    0: { cellWidth: 100 }
+                },
+                didDrawCell: (data) => {
+                    if (data.section === 'body' && data.column.index === 0) {
+                        const cellData = data.cell.raw;
+                        if (cellData && cellData.url) {
+                            doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: cellData.url });
+                        }
+                    }
                 }
             });
 
@@ -274,7 +283,7 @@ function App() {
                                                             : p.pagePath}
                                                     </a>
                                                     <span style={{ fontSize: '0.75rem', opacity: 0.5, fontFamily: 'monospace' }}>
-                                                        {`https://www.iabargentina.com.ar${p.pagePath}`}
+                                                        {p.pagePath}
                                                     </span>
                                                 </div>
                                                 {index === 0 && <span className="badge">Noticia Top</span>}
