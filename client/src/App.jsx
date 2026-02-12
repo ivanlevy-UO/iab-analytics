@@ -82,13 +82,17 @@ function App() {
             doc.text('Detalle por Noticia', 14, doc.lastAutoTable.finalY + 15);
 
             const tableData = pages.map(p => {
-                const displayTitle = p.pageTitle
+                const title = p.pageTitle
                     ? (p.pageTitle.split('|')[0].trim().length > 60
                         ? p.pageTitle.split('|')[0].trim().substring(0, 60) + '...'
                         : p.pageTitle.split('|')[0].trim())
-                    : p.pagePath;
+                    : 'Sin título';
+
+                // Combine title and secondary path with a newline character
+                const displayValue = `${title}\n${p.pagePath}`;
+
                 return [
-                    displayTitle,
+                    displayValue,
                     p.screenPageViews.toLocaleString(),
                     p.activeUsers.toLocaleString(),
                     `${p.avgDuration} seg`
